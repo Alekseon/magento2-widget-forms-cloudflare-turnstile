@@ -53,6 +53,14 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
+      - name: Wait for Elasticsearch to be ready
+        run: |
+          for i in {1..30}; do
+            curl -s "http://elasticsearch:9200" && break
+            echo "Waiting for Elasticsearch..."
+            sleep 5
+          done
+
       - name: Install Magento
         run: |
           composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition magento

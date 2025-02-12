@@ -21,6 +21,15 @@ jobs:
         ports:
           - 3306:3306
 
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        env:
+          discovery.type: single-node
+          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+          xpack.security.enabled: "false"
+        ports:
+          - 9200:9200
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -63,6 +72,9 @@ jobs:
             --currency=USD \
             --timezone=America/New_York \
             --backend-frontname=admin
+            --search-engine=elasticsearch7 \
+            --elasticsearch-host=elasticsearch \
+            --elasticsearch-port=9200
 
       - name: Enable module
         run: |

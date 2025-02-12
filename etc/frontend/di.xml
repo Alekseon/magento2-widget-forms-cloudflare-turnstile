@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Alekseon sp. z o.o.
+ * http://www.alekseon.com/
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="PixelOpen\CloudflareTurnstile\Block\Turnstile\Config">
+        <plugin name="Alekseon_WidgetFormsCloudflareTurnstile::CloudflareTurnstileConfigPlugin" type="Alekseon\WidgetFormsCloudflareTurnstile\Plugin\CloudflareTurnstileConfigPlugin" sortOrder="1" />
+    </type>
+    <type name="Alekseon\WidgetFormsReCaptcha\Observer\WidgetFormAddReCaptchaObserver">
+        <plugin name="Alekseon_WidgetFormsCloudflareTurnstile::WidgetFormAddReCaptchaObserverPlugin" type="Alekseon\WidgetFormsCloudflareTurnstile\Plugin\WidgetFormAddReCaptchaObserverPlugin" sortOrder="1" />
+    </type>
+    <type name="Alekseon\WidgetFormsReCaptcha\Observer\ValidateReCaptchaObserver">
+        <plugin name="Alekseon_WidgetFormsCloudflareTurnstile::ValidateReCaptchaObserverPlugin" type="Alekseon\WidgetFormsCloudflareTurnstile\Plugin\ValidateReCaptchaObserverPlugin" sortOrder="1" />
+    </type>
+</config>

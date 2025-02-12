@@ -12,11 +12,8 @@
 <br>
 </p>
 <p>
-This module is responsible for Cloudflare Turnstile <a href="https://github.com/Alekseon/magento2-widget-forms">Widget Forms</a> validation.
+This module integrates <a href="https://github.com/Pixel-Open/magento-cloudflare-turnstile">Magento Cloudflare Turnstile</a> module with <a href="https://github.com/Alekseon/magento2-widget-forms">Widget Forms</a>.
 <br>
-More in wiki:
 <br>
-<ul>
-<li><a href="https://github.com/Alekseon/magento2-widget-forms/wiki">Widget Forms</a></li>
-</ul>
+More in wiki: <a href="https://github.com/Alekseon/magento2-widget-forms/wiki">Widget Forms</a>
 </p>

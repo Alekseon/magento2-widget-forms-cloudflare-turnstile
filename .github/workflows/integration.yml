@@ -22,13 +22,14 @@ jobs:
           - 3306:3306
 
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
-        env:
-          discovery.type: single-node
-          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-          xpack.security.enabled: "false"
+        image: docker.io/wardenenv/elasticsearch:7.8
         ports:
           - 9200:9200
+        env:
+          'discovery.type': single-node
+          'xpack.security.enabled': false
+          ES_JAVA_OPTS: "-Xms64m -Xmx512m"
+        options: --health-cmd="curl localhost:9200/_cluster/health?wait_for_status=yellow&timeout=60s" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout repository
@@ -59,13 +60,7 @@ jobs:
           cd magento
           ls -la bin/magento  # Debug: Sprawdzenie czy plik istnieje
           chmod +x bin/magento # Nadaj uprawnienia do wykonania, jeśli brak
-          bin/magento config:set catalog/search/engine 'elasticsearch7'
-          bin/magento config:set catalog/search/elasticsearch7_server_hostname 'localhost'
-          bin/magento config:set catalog/search/elasticsearch7_server_port '9200'
-          bin/magento config:set catalog/search/elasticsearch7_index_prefix 'magento2'
-          bin/magento config:set catalog/search/elasticsearch7_enable_auth '0'
-          bin/magento config:set catalog/search/elasticsearch7_server_timeout '15'
-          bin/magento setup:install \
+          php bin/magento setup:install \
             --base-url=http://localhost \
             --db-host=127.0.0.1 \
             --db-name=magento \

@@ -22,14 +22,13 @@ jobs:
           - 3306:3306
 
       elasticsearch:
-        image: docker.io/wardenenv/elasticsearch:7.8
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        env:
+          discovery.type: single-node
+          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+          xpack.security.enabled: "false"
         ports:
           - 9200:9200
-        env:
-          'discovery.type': single-node
-          'xpack.security.enabled': false
-          ES_JAVA_OPTS: "-Xms64m -Xmx512m"
-        options: --health-cmd="curl localhost:9200/_cluster/health?wait_for_status=yellow&timeout=60s" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout repository
@@ -54,21 +53,19 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
-      - name: Wait for Elasticsearch to be ready
-        run: |
-          for i in {1..30}; do
-            curl -s "http://elasticsearch:9200" && break
-            echo "Waiting for Elasticsearch..."
-            sleep 5
-          done
-
       - name: Install Magento
         run: |
           composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition magento
           cd magento
           ls -la bin/magento  # Debug: Sprawdzenie czy plik istnieje
           chmod +x bin/magento # Nadaj uprawnienia do wykonania, jeśli brak
-          php bin/magento setup:install \
+          bin/magento config:set catalog/search/engine 'elasticsearch7'
+          bin/magento config:set catalog/search/elasticsearch7_server_hostname 'localhost'
+          bin/magento config:set catalog/search/elasticsearch7_server_port '9200'
+          bin/magento config:set catalog/search/elasticsearch7_index_prefix 'magento2'
+          bin/magento config:set catalog/search/elasticsearch7_enable_auth '0'
+          bin/magento config:set catalog/search/elasticsearch7_server_timeout '15'
+          bin/magento setup:install \
             --base-url=http://localhost \
             --db-host=127.0.0.1 \
             --db-name=magento \
@@ -83,9 +80,6 @@ jobs:
             --currency=USD \
             --timezone=America/New_York \
             --backend-frontname=admin \
-            --search-engine=elasticsearch7 \
-            --elasticsearch-host=elasticsearch \
-            --elasticsearch-port=9200
 
       - name: Enable module
         run: |

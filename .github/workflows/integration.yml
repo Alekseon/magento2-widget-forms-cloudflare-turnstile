@@ -20,14 +20,9 @@ jobs:
           MYSQL_DATABASE: magento
         ports:
           - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --host=localhost --user=root --password=root"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up PHP
@@ -37,8 +32,14 @@ jobs:
           extensions: mbstring, intl, bcmath, gd, pdo_mysql
           coverage: none
 
-      - name: Install Composer
-        run: composer self-update && composer install --no-interaction
+      - name: Configure Magento repository
+        run: composer config repositories.magento composer https://repo.magento.com/
+
+      - name: Authenticate with Magento
+        run: composer config --auth http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
 
       - name: Install Magento
         run: |

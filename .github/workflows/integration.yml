@@ -38,6 +38,9 @@ jobs:
       - name: Authenticate with Magento
         run: composer config --auth http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
+      - name: Allow Magento Composer plugins
+        run: composer config --no-plugins allow-plugins.magento/composer-dependency-version-audit-plugin true
+
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 

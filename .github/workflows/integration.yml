@@ -57,7 +57,9 @@ jobs:
         run: |
           composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition magento
           cd magento
-          bin/magento setup:install \
+          ls -la bin/magento  # Debug: Sprawdzenie czy plik istnieje
+          chmod +x bin/magento # Nadaj uprawnienia do wykonania, jeśli brak
+          php bin/magento setup:install \
             --base-url=http://localhost \
             --db-host=127.0.0.1 \
             --db-name=magento \
@@ -71,7 +73,7 @@ jobs:
             --language=en_US \
             --currency=USD \
             --timezone=America/New_York \
-            --backend-frontname=admin
+            --backend-frontname=admin \
             --search-engine=elasticsearch7 \
             --elasticsearch-host=elasticsearch \
             --elasticsearch-port=9200

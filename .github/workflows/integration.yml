@@ -1,27 +1,23 @@
-name: Magento Integration Tests
-
+name: M2 Integration Tests
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
-    branches:
-      - main
 
 jobs:
   integration-tests:
+    name: Magento 2 Integration Tests
     runs-on: ubuntu-latest
-
     services:
       mysql:
-        image: mysql:8.0
+        image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: magento
         ports:
           - 3306:3306
-
-      elasticsearch:
+        options: --tmpfs /tmp:rw --tmpfs /var/lib/mysql:rw --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      es:
         image: docker.io/wardenenv/elasticsearch:7.8
         ports:
           - 9200:9200
@@ -30,60 +26,11 @@ jobs:
           'xpack.security.enabled': false
           ES_JAVA_OPTS: "-Xms64m -Xmx512m"
         options: --health-cmd="curl localhost:9200/_cluster/health?wait_for_status=yellow&timeout=60s" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v3
+      - name: M2 Integration Tests with Magento 2 (Php 7.4)
+        uses: extdn/github-actions-m2/magento-integration-tests/7.4@master
         with:
-          php-version: "8.1"
-          extensions: mbstring, intl, bcmath, gd, pdo_mysql
-          coverage: none
-
-      - name: Configure Magento repository
-        run: composer config repositories.magento composer https://repo.magento.com/
-
-      - name: Authenticate with Magento
-        run: composer config --auth http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
-
-      - name: Allow Magento Composer plugins
-        run: composer config --no-plugins allow-plugins.magento/composer-dependency-version-audit-plugin true
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist
-
-      - name: Install Magento
-        run: |
-          composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition magento
-          cd magento
-          ls -la bin/magento  # Debug: Sprawdzenie czy plik istnieje
-          chmod +x bin/magento # Nadaj uprawnienia do wykonania, jeśli brak
-          php bin/magento setup:install \
-            --base-url=http://localhost \
-            --db-host=127.0.0.1 \
-            --db-name=magento \
-            --db-user=root \
-            --db-password=root \
-            --admin-firstname=admin \
-            --admin-lastname=admin \
-            --admin-email=admin@example.com \
-            --admin-user=admin \
-            --admin-password=admin123 \
-            --language=en_US \
-            --currency=USD \
-            --timezone=America/New_York \
-            --backend-frontname=admin \
-
-      - name: Enable module
-        run: |
-          cd magento
-          composer require alekseon/widget-forms-cloudflare-turnstile
-          bin/magento module:enable Alekseon_WidgetFormsCloudflareTurnstile
-          bin/magento setup:upgrade
-
-      - name: Run Magento Integration Tests
-        run: |
-          cd magento/dev/tests/integration
-          ../../../vendor/bin/phpunit -c phpunit.xml.dist
+          module_name: Alekseon_WidgetFormsCloudflareTurnstile
+          composer_name: alekseon/widget-forms-cloudflare-turnstile
+          ce_version: '2.4.0'

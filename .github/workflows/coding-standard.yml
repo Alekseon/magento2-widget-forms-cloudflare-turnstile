@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: docker://extdn/magento-phpstan-action:dev
+      - uses: docker://extdn/magento-phpstan-action:8.2-latest
         with:
           composer_name: alekseon/widget-forms-cloudflare-turnstile
           composer_version: 2

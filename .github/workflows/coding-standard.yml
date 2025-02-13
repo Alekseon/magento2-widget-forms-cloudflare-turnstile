@@ -36,4 +36,4 @@ jobs:
       - uses: extdn/github-actions-m2/magento-phpstan@master
         with:
           composer_version: 2
-          composer_name: alekseon/widget-forms
+          composer_name: alekseon/widget-forms-cloudflare-turnstile

@@ -33,4 +33,5 @@ jobs:
         with:
           module_name: Alekseon_WidgetFormsCloudflareTurnstile
           composer_name: alekseon/widget-forms-cloudflare-turnstile
+          composer_version: 2
           ce_version: '2.4.0'

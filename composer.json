@@ -2,7 +2,7 @@
     "name": "alekseon/widget-forms-cloudflare-turnstile",
     "description": "N/A",
     "require": {
-        "alekseon/widget-forms-re-captcha": "^100.2.2",
+        "alekseon/widget-forms-re-captcha": "^100.2.3",
         "pixelopen/magento-cloudflare-turnstile": "^100.2.0"
     },
     "type": "magento2-module",

@@ -29,4 +29,3 @@ jobs:
           composer_name: alekseon/widget-forms-cloudflare-turnstile
           composer_version: 2
           phpstan_level: 2
-          magento_pre_install_script: .github/workflows/extdn-phpstan-tests-pre-install-m244.sh
